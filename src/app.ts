@@ -5,6 +5,8 @@ import session from "express-session";
 import cookieParser from "cookie-parser";
 import flash from "connect-flash";
 
+import "./utils/db";
+
 import router from "./routes/routes";
 
 const app = express();
@@ -17,6 +19,19 @@ app.set("views", "./src/views");
 app.use(expressLayouts); // Third party middleware
 app.use(express.static("public")); // Built-in level middleware
 app.use(express.urlencoded({ extended: true }));
+
+// Konfigurasi Flash
+app.use(cookieParser("secret"));
+app.use(
+  session({
+    cookie: { maxAge: 6000 },
+    secret: "secret",
+    resave: true,
+    saveUninitialized: true,
+  })
+);
+
+app.use(flash());
 
 // Middleware Routes
 app.use("/", router);

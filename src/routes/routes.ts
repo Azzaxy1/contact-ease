@@ -1,4 +1,5 @@
 import express, { Request, Response } from "express";
+import Contact from "../model/contact";
 
 const router = express.Router();
 
@@ -17,6 +18,20 @@ router.get("/about", (req, res) => {
     title: "Halaman About",
     layout: "layouts/main-layout",
     activeRoute: "about",
+  });
+});
+
+// Rute untuk halaman contact
+router.get("/contact", async (req, res) => {
+  const contacts = await Contact.find();
+
+  res.render("contact", {
+    title: "Halaman Contact",
+    layout: "layouts/main-layout",
+    contacts,
+    activeRoute: "contact",
+    //* Gunakan flash
+    msg: req.flash("msg"),
   });
 });
 
