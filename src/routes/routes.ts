@@ -11,4 +11,13 @@ router.get("/", (req: Request, res: Response) => {
   });
 });
 
+// Rute untuk halaman about
+router.get("/about", (req, res) => {
+  res.render("about", {
+    title: "Halaman About",
+    layout: "layouts/main-layout",
+    activeRoute: "about",
+  });
+});
+
 export default router;
