@@ -105,6 +105,39 @@ router.get("/contact/edit/:nama", async (req, res) => {
   });
 });
 
+// Process update data contact
+router.post(
+  "/contact/update",
+  body("nama").custom(async (value, { req }) => {
+    const duplicate = await Contact.findOne({ nama: value });
+    if (value !== req.body.oldNama && duplicate) {
+      throw new Error("Nama contact sudah terdaftar!");
+    }
+    return true;
+  }),
+  check("email", "Email tidak valid!").isEmail(),
+  check("nohp").isMobilePhone("id-ID").withMessage("No HandPhone tidak valid!"),
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      res.render("edit-contact", {
+        title: "Form Ubah Data Contact",
+        layout: "layouts/main-layout",
+        activeRoute: "contact",
+        errors: errors.array(),
+        success: "Data berhasil dimasukan",
+        contact: req.body,
+      });
+    } else {
+      console.log(req.body);
+      await Contact.updateOne({ nama: req.body.oldNama }, req.body);
+
+      req.flash("msg", "Data contact berhasil diubah!");
+      res.redirect("/contact");
+    }
+  }
+);
+
 // Rute halaman detail contact
 router.get("/contact/:nama", async (req, res) => {
   const params = req.params.nama;
