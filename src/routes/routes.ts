@@ -35,4 +35,18 @@ router.get("/contact", async (req, res) => {
   });
 });
 
+// Rute halaman detail contact
+router.get("/contact/:nama", async (req, res) => {
+  const params = req.params.nama;
+  const contact = await Contact.findOne({ nama: params });
+
+  res.render("detail", {
+    title: "Detail Contact",
+    layout: "layouts/main-layout",
+    contact,
+    params,
+    activeRoute: "contact",
+  });
+});
+
 export default router;
