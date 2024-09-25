@@ -4,6 +4,7 @@ import "dotenv/config";
 import session from "express-session";
 import cookieParser from "cookie-parser";
 import flash from "connect-flash";
+import methodOverride from "method-override";
 
 import "./utils/db";
 
@@ -32,6 +33,9 @@ app.use(
 );
 
 app.use(flash());
+
+// Konfigurasi method override
+app.use(methodOverride("_method"));
 
 // Middleware Routes
 app.use("/", router);

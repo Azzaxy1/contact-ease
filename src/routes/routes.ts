@@ -80,17 +80,10 @@ router.post(
 );
 
 // Prosess delete contact (diatas detail)
-router.get("/contact/delete/:nama", async (req, res) => {
-  const params = req.params.nama;
-  const contact = await Contact.findOne({ nama: params });
-  // jika contact tidak ada
-  if (!contact) {
-    res.status(404).send("<h1>404</h1>");
-  } else {
-    await Contact.deleteOne({ nama: params });
-    req.flash("msg", "Data contact berhasil dihapus!");
-    res.redirect("/contact");
-  }
+router.delete("/contact", async (req, res) => {
+  await Contact.deleteOne({ nama: req.body.nama });
+  req.flash("msg", "Data contact berhasil dihapus!");
+  res.redirect("/contact");
 });
 
 // Form ubah data contact
