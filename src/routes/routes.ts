@@ -93,6 +93,18 @@ router.get("/contact/delete/:nama", async (req, res) => {
   }
 });
 
+// Form ubah data contact
+router.get("/contact/edit/:nama", async (req, res) => {
+  const contact = await Contact.findOne({ nama: req.params.nama });
+
+  res.render("edit-contact", {
+    title: "Form Ubah Data Contact",
+    layout: "layouts/main-layout",
+    activeRoute: "contact",
+    contact,
+  });
+});
+
 // Rute halaman detail contact
 router.get("/contact/:nama", async (req, res) => {
   const params = req.params.nama;
