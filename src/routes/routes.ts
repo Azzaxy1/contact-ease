@@ -98,9 +98,8 @@ router.get("/contact/edit/:nama", async (req, res) => {
   });
 });
 
-// Process update data contact
-router.post(
-  "/contact/update",
+router.put(
+  "/contact",
   body("nama").custom(async (value, { req }) => {
     const duplicate = await Contact.findOne({ nama: value });
     if (value !== req.body.oldNama && duplicate) {
@@ -122,8 +121,16 @@ router.post(
         contact: req.body,
       });
     } else {
-      console.log(req.body);
-      await Contact.updateOne({ nama: req.body.oldNama }, req.body);
+      await Contact.updateOne(
+        { _id: req.body._id },
+        {
+          $set: {
+            nama: req.body.nama,
+            email: req.body.email,
+            nohp: req.body.nohp,
+          },
+        }
+      );
 
       req.flash("msg", "Data contact berhasil diubah!");
       res.redirect("/contact");
