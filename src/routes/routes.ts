@@ -79,6 +79,20 @@ router.post(
   }
 );
 
+// Prosess delete contact (diatas detail)
+router.get("/contact/delete/:nama", async (req, res) => {
+  const params = req.params.nama;
+  const contact = await Contact.findOne({ nama: params });
+  // jika contact tidak ada
+  if (!contact) {
+    res.status(404).send("<h1>404</h1>");
+  } else {
+    await Contact.deleteOne({ nama: params });
+    req.flash("msg", "Data contact berhasil dihapus!");
+    res.redirect("/contact");
+  }
+});
+
 // Rute halaman detail contact
 router.get("/contact/:nama", async (req, res) => {
   const params = req.params.nama;
