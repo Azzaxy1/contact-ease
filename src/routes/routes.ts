@@ -1,155 +1,43 @@
-import express, { Request, Response } from "express";
-import { body, validationResult, check } from "express-validator";
-
-import Contact from "../model/contact";
+import express from "express";
+import {
+  about,
+  addContact,
+  addContactForm,
+  contactList,
+  deleteContact,
+  detailContact,
+  editContactForm,
+  home,
+  updateContact,
+} from "../controllers/contactController";
 
 const router = express.Router();
 
 // Halaman Home
-router.get("/", (req: Request, res: Response) => {
-  res.render("index", {
-    title: "Halaman Home",
-    layout: "layouts/main-layout",
-    activeRoute: "home",
-  });
-});
+router.get("/", home);
 
 // Rute untuk halaman about
-router.get("/about", (req, res) => {
-  res.render("about", {
-    title: "Halaman About",
-    layout: "layouts/main-layout",
-    activeRoute: "about",
-  });
-});
+router.get("/about", about);
 
 // Rute untuk halaman contact
-router.get("/contact", async (req, res) => {
-  const contacts = await Contact.find();
-
-  res.render("contact", {
-    title: "Halaman Contact",
-    layout: "layouts/main-layout",
-    contacts,
-    activeRoute: "contact",
-    //* Gunakan flash
-    msg: req.flash("msg"),
-  });
-});
+router.get("/contact", contactList);
 
 // Rute halaman form tambah data
-router.get("/contact/add", (req, res) => {
-  res.render("add-contact", {
-    title: "Form Tambah Data Contact",
-    layout: "layouts/main-layout",
-    activeRoute: "contact",
-  });
-});
+router.get("/contact/add", addContactForm);
 
 // proses tambah data contact
-router.post(
-  "/contact",
-  body("nama").custom(async (value: string) => {
-    const duplicate = await Contact.findOne({ nama: value });
-    if (duplicate) {
-      throw new Error("Nama contact sudah terdaftar!");
-    }
+router.post("/contact", addContact);
 
-    return true;
-  }),
-  check("email", "Email tidak valid!").isEmail(),
-  check("nohp").isMobilePhone("id-ID").withMessage("No HandPhone tidak valid!"),
-  async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      res.render("add-contact", {
-        title: "Form Tambah Data Contact",
-        layout: "layouts/main-layout",
-        activeRoute: "contact",
-        errors: errors.array(),
-        success: "Data berhasil dimasukan",
-      });
-    } else {
-      await Contact.insertMany(req.body);
-
-      // kirimkan flash message
-      req.flash("msg", "Data contact berhasil ditambahkan!");
-      res.redirect("/contact");
-    }
-  }
-);
-
-// Prosess delete contact (diatas detail)
-router.delete("/contact", async (req, res) => {
-  await Contact.deleteOne({ nama: req.body.nama });
-  req.flash("msg", "Data contact berhasil dihapus!");
-  res.redirect("/contact");
-});
+// Prosess delete contact
+router.delete("/contact", deleteContact);
 
 // Form ubah data contact
-router.get("/contact/edit/:nama", async (req, res) => {
-  const contact = await Contact.findOne({ nama: req.params.nama });
+router.get("/contact/edit/:nama", editContactForm);
 
-  res.render("edit-contact", {
-    title: "Form Ubah Data Contact",
-    layout: "layouts/main-layout",
-    activeRoute: "contact",
-    contact,
-  });
-});
-
-router.put(
-  "/contact",
-  body("nama").custom(async (value, { req }) => {
-    const duplicate = await Contact.findOne({ nama: value });
-    if (value !== req.body.oldNama && duplicate) {
-      throw new Error("Nama contact sudah terdaftar!");
-    }
-    return true;
-  }),
-  check("email", "Email tidak valid!").isEmail(),
-  check("nohp").isMobilePhone("id-ID").withMessage("No HandPhone tidak valid!"),
-  async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      res.render("edit-contact", {
-        title: "Form Ubah Data Contact",
-        layout: "layouts/main-layout",
-        activeRoute: "contact",
-        errors: errors.array(),
-        success: "Data berhasil dimasukan",
-        contact: req.body,
-      });
-    } else {
-      await Contact.updateOne(
-        { _id: req.body._id },
-        {
-          $set: {
-            nama: req.body.nama,
-            email: req.body.email,
-            nohp: req.body.nohp,
-          },
-        }
-      );
-
-      req.flash("msg", "Data contact berhasil diubah!");
-      res.redirect("/contact");
-    }
-  }
-);
+// Proses Ubah Data Contact
+router.put("/contact", updateContact);
 
 // Rute halaman detail contact
-router.get("/contact/:nama", async (req, res) => {
-  const params = req.params.nama;
-  const contact = await Contact.findOne({ nama: params });
-
-  res.render("detail", {
-    title: "Detail Contact",
-    layout: "layouts/main-layout",
-    contact,
-    params,
-    activeRoute: "contact",
-  });
-});
+router.get("/contact/:nama", detailContact);
 
 export default router;
