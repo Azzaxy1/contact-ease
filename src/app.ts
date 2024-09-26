@@ -5,6 +5,7 @@ import session from "express-session";
 import cookieParser from "cookie-parser";
 import flash from "connect-flash";
 import methodOverride from "method-override";
+import path from "path";
 
 import "./utils/db";
 
@@ -18,7 +19,7 @@ const PORT = process.env.PORT || 3000;
 app.set("view engine", "ejs");
 app.set("views", "./src/views");
 app.use(expressLayouts); // Third party middleware
-app.use(express.static("public")); // Built-in level middleware
+app.use(express.static(path.join(__dirname, "../src/public"))); // Built-in level middleware
 app.use(express.urlencoded({ extended: true }));
 
 // Konfigurasi Flash
