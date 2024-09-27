@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser";
 import flash from "connect-flash";
 import methodOverride from "method-override";
 import path from "path";
+import MongoStore from "connect-mongo";
 
 import "./utils/db";
 
@@ -19,17 +20,18 @@ const PORT = process.env.PORT || 3000;
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "../src/views"));
 app.use(expressLayouts); // Third party middleware
-app.use(express.static(path.join(__dirname, "../src/public"))); // Built-in level middleware
+app.use(express.static(path.join(__dirname, "../dist/public")));
 app.use(express.urlencoded({ extended: true }));
 
 // Konfigurasi Flash
 app.use(cookieParser("secret"));
 app.use(
   session({
-    cookie: { maxAge: 6000 },
+    cookie: { maxAge: 60000 },
     secret: "secret",
-    resave: true,
+    resave: false,
     saveUninitialized: true,
+    store: MongoStore.create({ mongoUrl: process.env.MONGO_URI }),
   })
 );
 
