@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
 
-const mongoURI: string =
-  process.env.MONGO_URI || "mongodb://127.0.0.1:27017/mydb";
+const mongoURI: string = process.env.MONGO_URI || "";
+
 mongoose.connect(mongoURI);
