@@ -7,6 +7,7 @@ import flash from "connect-flash";
 import methodOverride from "method-override";
 import path from "path";
 import MongoStore from "connect-mongo";
+import serverless from "serverless-http";
 
 import "./utils/db";
 
@@ -20,7 +21,7 @@ const PORT = process.env.PORT || 3000;
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "../src/views"));
 app.use(expressLayouts); // Third party middleware
-app.use(express.static(path.join(__dirname, "../dist/public")));
+app.use(express.static(path.join(__dirname, "../src/public")));
 app.use(express.urlencoded({ extended: true }));
 
 // Konfigurasi Flash
@@ -46,3 +47,7 @@ app.use("/", router);
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
+
+// Export Express app as serverless function
+module.exports = app;
+module.exports.handler = serverless(app);
