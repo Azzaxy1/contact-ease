@@ -17,7 +17,7 @@ const PORT = process.env.PORT || 3000;
 
 // Konfigurasi EJS
 app.set("view engine", "ejs");
-app.set("views", "./src/views");
+app.set("views", path.join(__dirname, "../src/views"));
 app.use(expressLayouts); // Third party middleware
 app.use(express.static(path.join(__dirname, "../src/public"))); // Built-in level middleware
 app.use(express.urlencoded({ extended: true }));

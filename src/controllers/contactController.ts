@@ -4,7 +4,7 @@ import Contact from "../model/contact";
 
 // Halaman Home
 export const home = (req: Request, res: Response) => {
-  res.render("../views/index.ejs", {
+  res.render("index", {
     title: "Halaman Home",
     layout: "layouts/main-layout",
     activeRoute: "home",
@@ -13,7 +13,7 @@ export const home = (req: Request, res: Response) => {
 
 // Halaman About
 export const about = (req: Request, res: Response) => {
-  res.render("../views/about.ejs", {
+  res.render("about", {
     title: "Halaman About",
     layout: "layouts/main-layout",
     activeRoute: "about",
@@ -24,7 +24,7 @@ export const about = (req: Request, res: Response) => {
 export const contactList = async (req: Request, res: Response) => {
   const contacts = await Contact.find();
 
-  res.render("../views/contact.ejs", {
+  res.render("contact", {
     title: "Halaman Contact",
     layout: "layouts/main-layout",
     contacts,
@@ -36,7 +36,7 @@ export const contactList = async (req: Request, res: Response) => {
 
 // Halaman form tambah data
 export const addContactForm = (req: Request, res: Response) => {
-  res.render("../views/add-contact.ejs", {
+  res.render("add-contact", {
     title: "Form Tambah Data Contact",
     layout: "layouts/main-layout",
     activeRoute: "contact",
@@ -58,7 +58,7 @@ export const addContact = [
   async (req: Request, res: Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      res.render("../views/add-contact.ejs", {
+      res.render("add-contact", {
         title: "Form Tambah Data Contact",
         layout: "layouts/main-layout",
         activeRoute: "contact",
@@ -86,7 +86,7 @@ export const deleteContact = async (req: Request, res: Response) => {
 export const editContactForm = async (req: Request, res: Response) => {
   const contact = await Contact.findOne({ nama: req.params.nama });
 
-  res.render("../views/edit-contact.ejs", {
+  res.render("edit-contact", {
     title: "Form Ubah Data Contact",
     layout: "layouts/main-layout",
     activeRoute: "contact",
@@ -108,7 +108,7 @@ export const updateContact = [
   async (req: Request, res: Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      res.render("../views/edit-contact.ejs", {
+      res.render("edit-contact", {
         title: "Form Ubah Data Contact",
         layout: "layouts/main-layout",
         activeRoute: "contact",
@@ -139,7 +139,7 @@ export const detailContact = async (req: Request, res: Response) => {
   const params = req.params.nama;
   const contact = await Contact.findOne({ nama: params });
 
-  res.render("../views/detail.ejs", {
+  res.render("detail", {
     title: "Detail Contact",
     layout: "layouts/main-layout",
     contact,
